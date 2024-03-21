@@ -7,7 +7,7 @@ FOR EACH ROW
 BEGIN
 	UPDATE items
 	SET quantity = CASE
-		WHEN quantity - NEW.number >= 0 THEN quantity - NEW.number
+		WHEN quantity - orders.number >= 0 THEN quantity - orders.number
 		ELSE 0
 	END
 	WHERE name = NEW.item_name;
