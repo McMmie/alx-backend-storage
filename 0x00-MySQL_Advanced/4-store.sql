@@ -6,6 +6,9 @@ AFTER INSERT ON orders
 FOR EACH ROW
 BEGIN
 	UPDATE items
-	SET quantity = quantity + NEW.number
+	SET quantity = CASE
+		WHEN quantity - NEW.number >= 0 THEN quantity - NEW.number
+		ELSE 0
+	END
 	WHERE name = NEW.item_name;
 END
