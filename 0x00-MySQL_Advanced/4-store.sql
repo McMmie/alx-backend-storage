@@ -2,7 +2,7 @@
 -- quantity of an item after adding a new order.
 
 DROP TRIGGER IF EXISTS reduce_quantity;
-DELIMITER$$
+DELIMITER $$
 CREATE TRIGGER IF NOT EXISTS reduce_quantity
 AFTER INSERT ON orders
 FOR EACH ROW
