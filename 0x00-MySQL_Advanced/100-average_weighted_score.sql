@@ -13,7 +13,7 @@ BEGIN
 	FROM corrections
 	INNER JOIN projects
 	ON corrections.project_id = projects.id
-	WHERE correntions.user_id = user_id;
+	WHERE corrections.user_id = user_id;
 
 	SELECT SUM(projects.weight)
 	INTO weight
