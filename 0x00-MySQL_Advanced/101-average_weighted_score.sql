@@ -9,7 +9,7 @@ BEGIN
 	ALTER TABLE users ADD weight INT NOT NULL;
 
 	UPDATE users
-	SET total_weighted_score = (
+	SET weighted_score = (
 	SELECT SUM(corrections.score * projects.weight)
 	FROM corrections
 	INNER JOIN projects
