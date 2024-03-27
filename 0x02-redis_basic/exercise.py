@@ -24,7 +24,27 @@ class Cache():
         takes a data argument and returns a string
         """
 
-        gen: str = (uuid.uuid4())
-        self._redis.set(generate, data)
+        gen = uuid.uuid4()
+        self._redis.set(gen, data)
         
-        return gen
+        return str(gen)
+    
+    def get(self, key: str,
+            fn: Optional[Callable] = None) -> Union[str, bytes, int, float]:
+        """
+         a get method that take a key string argument
+         and an optional Callable argument named fn
+         """
+         val = self._redis.get(key)
+         return val if not fn else fn(val)
+     
+    def get_int(self, key):
+        """
+        """
+        return self.get(key, int)
+    
+    def get_str(self, key):
+        """
+        """
+        val = self._redis.get(key)
+        return val.decode("utf-8")
