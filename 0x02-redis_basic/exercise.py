@@ -10,21 +10,22 @@ from functools import wraps
 
 def count_calls(method: Callable) -> Callable:
     """
+    Decorator to count the number of times a method is called.
     """
     @wraps(method)
     def wrapper(self, *args, **kwds):
         """
         """
         key_name = method.__qualname__
-        self._redis.incr(key_name, 0) + 1
+        self._redis.incr(key_name)
         return method(self, *args, **kwds)
 
     return wrapper
 
 
 def call_history(method: Callable) -> Callable:
-    """
-    """
+    """Decorator to track input-output history of a method."""
+
     @wraps(method)
     def wrapper(self, *args, **kwds):
         """
@@ -34,34 +35,29 @@ def call_history(method: Callable) -> Callable:
         inpt = _key + ":inputs"
         data = str(args)
         self._redis.rpush(inpt, data)
-        methd = method(self, *args, **kwds)
-        self._redis.rpush(outpt, str(methd))
+        results = method(self, *args, **kwds)
+        self._redis.rpush(outpt, str(results))
 
-        return methd
+        return results
 
     return wrapper
 
 
 def replay(func: Callable):
-    """
-    """
+    """Function to replay the history of method calls stored in Redis."""
+
     r = redis.Redis()
     key_m = func.__qualname__
     inp_m = r.lrange("{}:inputs".format(key_m), 0, -1)
     outp_m = r.lrange("{}:outputs".format(key_m), 0, -1)
     calls_number = len(inp_m)
-    times_str = 'times'
+    times_str = 'times' if calls_number != 1 else 'time'
 
-    if calls_number == 1:
-        times_str = 'time'
+    print('{} was called {} {}:'.format(key_m, calls_number, times_str)
 
-    fin = '{} was called {} {}:'.format(key_m, calls_number, times_str)
-    print(fin)
-
-    for k, v in zip(inp_m, outp_m):
-        fin = '{}(*{}) -> {}'.format(
-                key_m, k.decode('utf-8'), v.decode('utf-8'))
-        print(fin)
+    for i, j in zip(inp_m, outp_m):
+        print('{}(*{}) -> {}'.format(key_m,
+              i.decode('utf-8'), j.decode('utf-8'))
 
 
 class Cache():
