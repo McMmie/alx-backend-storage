@@ -5,7 +5,40 @@ This module shows how to use redis in python
 import redis
 from typing import Union, Callable, Optional
 import uuid
+from functools import wraps
 
+
+def count_calls(method: Callable) -> Callable:
+    """
+    """
+    @wraps(method)
+    def wrapper(self, *args, **kwds):
+        """
+        """
+        key_name = method.__qualname__
+        self._redis.incr(key_name, 0) + 1
+        return method(self, *args, **kwds)
+
+    return wrapper
+
+def call_history(method: Callable) -> Callable:
+    """
+    """
+    @wraps(method)
+    def wrapper(self, *args, **kwds):
+        """
+        """
+        _key = method.__qualname__
+        outpt = _key + ":outputs"
+        inpt = _key + ":inputs"
+        data = str(args)
+        self._redis.rpush(inpt, data)
+        methd = method(self, *args, **kwds)
+        self._redis.rpush(outpt, str(methd))
+        
+        return methd
+
+    return wrapper
 
 class Cache():
     """
