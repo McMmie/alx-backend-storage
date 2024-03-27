@@ -21,6 +21,7 @@ def count_calls(method: Callable) -> Callable:
 
     return wrapper
 
+
 def call_history(method: Callable) -> Callable:
     """
     """
@@ -35,10 +36,11 @@ def call_history(method: Callable) -> Callable:
         self._redis.rpush(inpt, data)
         methd = method(self, *args, **kwds)
         self._redis.rpush(outpt, str(methd))
-        
+
         return methd
 
     return wrapper
+
 
 def replay(func: Callable):
     """
@@ -49,10 +51,10 @@ def replay(func: Callable):
     outp_m = r.lrange("{}:outputs".format(key_m), 0, -1)
     calls_number = len(inp_m)
     times_str = 'times'
-    
+
     if calls_number == 1:
         times_str = 'time'
-    
+
     fin = '{} was called {} {}:'.format(key_m, calls_number, times_str)
     print(fin)
 
@@ -60,6 +62,7 @@ def replay(func: Callable):
         fin = '{}(*{}) -> {}'.format(
                 key_m, k.decode('utf-8'), v.decode('utf-8'))
         print(fin)
+
 
 class Cache():
     """
@@ -80,23 +83,23 @@ class Cache():
 
         gen = uuid.uuid4()
         self._redis.set(gen, data)
-        
+
         return str(gen)
-    
+
     def get(self, key: str,
             fn: Optional[Callable] = None) -> Union[str, bytes, int, float]:
         """
-         a get method that take a key string argument
-         and an optional Callable argument named fn
-         """
-         val = self._redis.get(key)
-         return val if not fn else fn(val)
-     
+        a get method that take a key string argument
+        and an optional Callable argument named fn
+        """
+        val = self._redis.get(key)
+        return val if not fn else fn(val)
+
     def get_int(self, key):
         """
         """
         return self.get(key, int)
-    
+
     def get_str(self, key):
         """
         """
