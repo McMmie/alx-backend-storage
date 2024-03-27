@@ -53,11 +53,11 @@ def replay(func: Callable):
     calls_number = len(inp_m)
     times_str = 'times' if calls_number != 1 else 'time'
 
-    print('{} was called {} {}:'.format(key_m, calls_number, times_str)
+    print('{} was called {} {}:'.format(key_m, calls_number, times_str))
 
     for i, j in zip(inp_m, outp_m):
         print('{}(*{}) -> {}'.format(key_m,
-              i.decode('utf-8'), j.decode('utf-8'))
+              i.decode('utf-8'), j.decode('utf-8')))
 
 
 class Cache():
